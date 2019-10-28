@@ -58,7 +58,41 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+  function playSound(e) {
+    // console.log(e.keyCode);
 
+    // selecting the audio that correspond to the pressed key 
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+    // selecting the div that correspond to the pressed key
+    const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+
+    // console.log(audio);
+    // console.log(key);
+
+    // stop the function from running all together if the key pressed doesn't correspond anything
+    if(!audio) return; 
+
+    // add a styling class 'playing' to each div corresponding to a pressed key
+    key.classList.add('playing');
+
+    audio.currentTime = 0; // rewinds to the start, so we're able to play a key multiple times without weird transitions
+
+    audio.play();
+  }
+
+  // add a listener 'transitionend' to the pressed key, that allow us to end the transform transition styling after the key has been pressed and styled, thanks to a function 'removeTransition'
+  function removeTransition(e) {
+    // console.log(e);
+    if (e.propertyName !== 'transform') return; // skip if it's not a transform
+    this.classList.remove('playing'); // remove the property playing on elements with .key class (this => key)
+  }
+
+  // select all keys and store them in a var (as an array)
+  const keys = document.querySelectorAll('.key');
+  // loop through the array of keys and add to each of them this event listener
+  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+
+  window.addEventListener('keydown', playSound);
 </script>
 
 
